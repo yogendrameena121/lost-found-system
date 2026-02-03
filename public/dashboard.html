@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Lost & Found</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">
+      Lost & Found System
+    </h1>
+
+    <div class="flex items-center gap-4">
+      <span id="userRole"
+        class="text-sm text-gray-600 px-3 py-1 bg-gray-100 rounded-full">
+        User
+      </span>
+
+      <button onclick="logout()"
+        class="text-sm text-red-500 hover:underline">
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- PAGE TITLE -->
+  <div class="mb-8">
+    <h2 class="text-3xl font-semibold text-gray-800">
+      Dashboard
+    </h2>
+    <p class="text-gray-500 mt-1">
+      Manage your lost and found activities
+    </p>
+  </div>
+
+  <!-- ACTION CARDS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- LOST ITEM -->
+    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-red-600">
+          Report Lost Item
+        </h3>
+        <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
+          User
+        </span>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-3">
+        Lost something valuable? Submit item details so it can be matched with found items.
+      </p>
+
+      <a href="/lost.html"
+        class="inline-block mt-4 bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700">
+        Report Lost
+      </a>
+    </div>
+
+    <!-- FOUND ITEM -->
+    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-green-600">
+          Report Found Item
+        </h3>
+        <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">
+          User
+        </span>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-3">
+        Found an item that doesn’t belong to you? Help return it to the rightful owner.
+      </p>
+
+      <a href="/found.html"
+        class="inline-block mt-4 bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
+        Report Found
+      </a>
+    </div>
+
+    <!-- MATCHES -->
+    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-blue-600">
+          Possible Matches
+        </h3>
+        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+          Smart
+        </span>
+      </div>
+
+      <p class="text-sm text-gray-500 mt-3">
+        View found items that closely match your lost reports using smart matching logic.
+      </p>
+
+      <a href="/matches.html"
+        class="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
+        View Matches
+      </a>
+    </div>
+
+    <!-- ADMIN PANEL (ROLE AWARE) -->
+    <div id="adminCard"
+      class="bg-gray-900 text-white rounded-xl shadow-sm p-6 hidden">
+      <h3 class="text-lg font-semibold">
+        Admin Panel
+      </h3>
+
+      <p class="text-sm text-gray-300 mt-3">
+        Review, approve, and manage lost & found reports across the system.
+      </p>
+
+      <a href="/admin.html"
+        class="inline-block mt-4 bg-white text-gray-900 px-4 py-2 rounded text-sm hover:bg-gray-200">
+        Open Admin Panel
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="text-center text-sm text-gray-400 py-6">
+  © 2026 Lost & Found System · Secure · Role-Based · Verified
+</footer>
+
+<script>
+function logout() {
+  localStorage.clear();
+  window.location.href = "/login.html";
+}
+
+/* Decode JWT to get role */
+const token = localStorage.getItem("token");
+if (!token) logout();
+
+const payload = JSON.parse(atob(token.split(".")[1]));
+document.getElementById("userRole").innerText = payload.role.toUpperCase();
+
+/* Show admin card only if admin */
+if (payload.role === "admin") {
+  document.getElementById("adminCard").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>

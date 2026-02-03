@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Items | Lost & Found</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">Lost & Found</h1>
+    <button onclick="logout()" class="text-sm text-red-500">Logout</button>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <h2 class="text-3xl font-semibold text-gray-800 mb-6">
+    My Reported Items
+  </h2>
+
+  <!-- FILTER -->
+  <div class="flex gap-3 mb-6">
+    <button onclick="loadItems('lost')"
+      class="px-4 py-2 bg-red-100 text-red-700 rounded">
+      Lost Items
+    </button>
+    <button onclick="loadItems('found')"
+      class="px-4 py-2 bg-green-100 text-green-700 rounded">
+      Found Items
+    </button>
+  </div>
+
+  <!-- ITEMS -->
+  <div id="items" class="space-y-4"></div>
+
+</main>
+
+<script>
+function logout(){
+  localStorage.clear();
+  location.href="/login.html";
+}
+
+function statusBadge(status){
+  if(status === "approved")
+    return `<span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Approved</span>`;
+  if(status === "rejected")
+    return `<span class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">Rejected</span>`;
+  return `<span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">Pending</span>`;
+}
+
+function loadItems(type){
+  fetch(`/${type}/my`, {
+    headers:{
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.length === 0){
+      items.innerHTML = `
+        <div class="text-center text-gray-500 mt-10">
+          <p class="text-lg">No ${type} items reported</p>
+        </div>`;
+      return;
+    }
+
+    items.innerHTML = data.map(i => `
+      <div class="bg-white rounded-xl shadow p-4 flex gap-4">
+
+        <img src="/uploads/${i.image || 'placeholder.png'}"
+          class="w-28 h-28 rounded object-cover">
+
+        <div class="flex-1">
+          <div class="flex justify-between items-start">
+            <h3 class="text-lg font-semibold">${i.item_name}</h3>
+            ${statusBadge(i.status)}
+          </div>
+
+          <p class="text-sm text-gray-500 mt-1">
+            Location: ${i.location}
+          </p>
+
+          <p class="text-sm text-gray-400">
+            ${type === 'lost' ? 'Lost' : 'Found'} on: ${i.lost_date || i.found_date}
+          </p>
+        </div>
+      </div>
+    `).join("");
+  });
+}
+
+/* Load lost items by default */
+loadItems("lost");
+</script>
+
+</body>
+</html>

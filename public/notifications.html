@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between">
+    <h1 class="text-xl font-bold text-blue-600">Notifications</h1>
+    <a href="/dashboard.html" class="text-sm text-blue-600">Dashboard</a>
+  </div>
+</nav>
+
+<main class="max-w-3xl mx-auto px-4 py-6">
+
+  <div id="list" class="space-y-3"></div>
+
+</main>
+
+<script>
+fetch("/notifications",{
+  headers:{
+    Authorization:"Bearer "+localStorage.getItem("token")
+  }
+})
+.then(res=>res.json())
+.then(data=>{
+  if(data.length===0){
+    list.innerHTML="<p class='text-gray-500'>No notifications</p>";
+    return;
+  }
+
+  list.innerHTML=data.map(n=>`
+    <div class="bg-white p-4 rounded shadow flex justify-between
+      ${n.is_read ? 'opacity-60' : ''}">
+      <div>
+        <p class="text-sm">${n.message}</p>
+        <p class="text-xs text-gray-400">${new Date(n.created_at).toLocaleString()}</p>
+      </div>
+      ${!n.is_read ? `
+        <button onclick="markRead(${n.id})"
+          class="text-xs text-blue-600">
+          Mark read
+        </button>` : ''}
+    </div>
+  `).join("");
+});
+
+function markRead(id){
+  fetch(`/notifications/read/${id}`,{
+    method:"POST",
+    headers:{
+      Authorization:"Bearer "+localStorage.getItem("token")
+    }
+  }).then(()=>location.reload());
+}
+</script>
+
+</body>
+</html>

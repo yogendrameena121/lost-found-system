@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Found Item</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 flex justify-center py-10">
+
+<form action="/found/add" method="POST" enctype="multipart/form-data"
+  class="bg-white p-8 rounded-xl shadow w-96 space-y-4">
+
+<h2 class="text-xl font-bold text-center">Report Found Item</h2>
+
+<input name="item_name" placeholder="Item Name" required class="w-full p-2 border rounded">
+<input name="category" placeholder="Category" required class="w-full p-2 border rounded">
+<input name="location" placeholder="Location" required class="w-full p-2 border rounded">
+<input type="date" name="found_date" required class="w-full p-2 border rounded">
+<textarea name="description" placeholder="Description" class="w-full p-2 border rounded"></textarea>
+<input type="file" name="image" class="w-full">
+
+<button class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+Submit
+</button>
+
+</form>
+
+</body>
+</html>
